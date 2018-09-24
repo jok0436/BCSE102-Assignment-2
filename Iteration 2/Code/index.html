@@ -1,9 +1,15 @@
 <!doctype html>
-<script src="game.js"></script>
-<script src="levels.js"></script>
+<script src="Source/Game_Logic.js"></script>
+<script src="Source/Levels.js"></script>
+<audio loop src="Music/Background.mp3" id="Background"></audio>
+<audio src="Music/Coin.mp3" id="Coin"></audio>
+<audio src="Music/Death.mp3" id="Death"></audio>
+<audio src="Music/Defeat.mp3" id="Defeat"></audio>
+<audio src="Music/Victory.mp3" id="Victory"></audio>
+<audio src="Music/Winner.mp3" id="Winner"></audio>
 
 <body>
-  test
+  <button onclick="playGame()" id="playButton">Play Game</button>
   <style>
     html,
     body {
@@ -14,6 +20,12 @@
     }
   </style>
   <script>
-    runGame(GAME_LEVELS, CanvasDisplay);
+    function playGame() {
+      var element = document.getElementById("playButton");
+      element.parentNode.removeChild(element);
+      var backgroundSound = document.getElementById("Background");
+      backgroundSound.play()
+      runGame(GAME_LEVELS, CanvasDisplay);
+    }
   </script>
 </body>

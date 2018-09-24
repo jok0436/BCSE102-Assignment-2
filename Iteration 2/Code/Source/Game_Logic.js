@@ -1,6 +1,7 @@
 /* jshint esversion:6 */
 var Level = class Level {
   constructor (plan) {
+    this.completeTime = 60
     let rows = plan.trim().split('\n').map(l => [...l])
     this.height = rows.length
     this.width = rows[0].length
@@ -123,13 +124,13 @@ var levelChars = {
 var scale = 20
 
 Level.prototype.touches = function (pos, size, type) {
-  var xStart = Math.floor(pos.x)
-  var xEnd = Math.ceil(pos.x + size.x)
-  var yStart = Math.floor(pos.y)
-  var yEnd = Math.ceil(pos.y + size.y)
+  let xStart = Math.floor(pos.x)
+  let xEnd = Math.ceil(pos.x + size.x)
+  let yStart = Math.floor(pos.y)
+  let yEnd = Math.ceil(pos.y + size.y)
 
-  for (var y = yStart; y < yEnd; y++) {
-    for (var x = xStart; x < xEnd; x++) {
+  for (let y = yStart; y < yEnd; y++) {
+    for (let x = xStart; x < xEnd; x++) {
       let isOutside = x < 0 || x >= this.width ||
         y < 0 || y >= this.height
       let here = isOutside ? 'wall' : this.rows[y][x]
@@ -173,7 +174,12 @@ Lava.prototype.collide = function (state) {
 Coin.prototype.collide = function (state) {
   let filtered = state.actors.filter(a => a !== this)
   let status = state.status
-  if (!filtered.some(a => a.type === 'coin')) status = 'won'
+  if (!filtered.some(a => a.type === 'coin')) {
+    playSoundWithID('Victory')
+    status = 'won'
+  } else {
+    playSoundWithID('Coin', true)
+  }
   return new State(state.level, filtered, status)
 }
 
@@ -259,10 +265,26 @@ function runLevel (level, Display) {
   let display = new Display(document.body, level)
   let state = State.start(level)
   let ending = 1
+  // FOR COUNTDOWN TIMER
+  let elapsedTime = 0
+  let remainingTime = 500
+  let playedDeathSound = false
+  //
   return new Promise(resolve => {
     runAnimation(time => {
       state = state.update(time, arrowKeys)
-      display.setState(state)
+      // FOR COUNTDOWN TIMER
+      elapsedTime += time
+      remainingTime = Math.floor(state.level.completeTime - elapsedTime)
+      if (remainingTime === 0) {
+        state.status = 'lost'
+      }
+      if (state.status === 'lost' && !playedDeathSound) {
+        playSoundWithID('Death')
+        playedDeathSound = true
+      }
+      display.setState(state, remainingTime)
+      //
       if (state.status === 'playing') {
         return true
       } else if (ending > 0) {
@@ -277,12 +299,24 @@ function runLevel (level, Display) {
   })
 }
 
+function playSoundWithID (soundID, reset = false) {
+  let sound = document.getElementById(soundID)
+  if (soundID === 'Winner' || soundID === 'Defeat') {
+    var backgroundSound = document.getElementById('Background')
+    backgroundSound.pause()
+  }
+  if (reset) {
+    sound.currentTime = 0
+  }
+  sound.play()
+}
 async function runGame (plans, Display) {
   for (let level = 0; level < plans.length;) {
     let status = await runLevel(new Level(plans[level]),
       Display)
     if (status === 'won') level++
   }
+  playSoundWithID('Winner')
   console.log("You've won!")
 }
 
@@ -308,16 +342,22 @@ var CanvasDisplay = class CanvasDisplay {
   }
 }
 
-CanvasDisplay.prototype.setState = function (state) {
-  this.updateCanvas(state)
+CanvasDisplay.prototype.setState = function (state, remainingTime) {
+  this.updateCanvas()
   this.updateViewport(state)
   this.clearDisplay(state.status)
   this.drawBackground(state.level)
   this.drawActors(state.actors)
+  this.drawRemainingTime(remainingTime)
 }
-CanvasDisplay.prototype.updateCanvas = function (state) {
+CanvasDisplay.prototype.updateCanvas = function () {
   this.canvas.width = window.innerWidth
   this.canvas.height = window.innerHeight
+}
+
+CanvasDisplay.prototype.drawRemainingTime = function (remainingTime) {
+  this.cx.font = '30px Arial'
+  this.cx.fillText(remainingTime, 10, 50)
 }
 
 CanvasDisplay.prototype.updateViewport = function (state) {
@@ -362,6 +402,7 @@ CanvasDisplay.prototype.clearDisplay = function (status) {
   this.cx.fillRect(0, 0,
     this.canvas.width, this.canvas.height)
 }
+
 CanvasDisplay.prototype.drawBackground = function (level) {
   let {
     left,
