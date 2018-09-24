@@ -362,7 +362,6 @@ CanvasDisplay.prototype.clearDisplay = function (status) {
   this.cx.fillRect(0, 0,
     this.canvas.width, this.canvas.height)
 }
-
 CanvasDisplay.prototype.drawBackground = function (level) {
   let {
     left,
