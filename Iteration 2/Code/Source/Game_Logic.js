@@ -356,9 +356,9 @@ CanvasDisplay.prototype.updateCanvas = function () {
 }
 
 CanvasDisplay.prototype.drawRemainingTime = function (remainingTime) {
-  this.cx.font = '30px Arial'
-  this.cx.fillStyle = 'black'
-  this.cx.fillText(remainingTime, 10, 50)
+  this.cx.font = '30px Consolas'
+  this.cx.fillStyle = 'white'
+  this.cx.fillText(remainingTime, 2, 20)
 }
 
 CanvasDisplay.prototype.updateViewport = function (state) {
