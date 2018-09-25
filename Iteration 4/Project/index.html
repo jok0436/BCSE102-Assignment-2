@@ -1,6 +1,22 @@
 <!doctype html>
-<script src="Source/Game_Logic.js"></script>
-<script src="Source/Levels.js"></script>
+<!--Control Code-->
+<!--Vec and Player Should be on top becuase they are called by the other files (early)
+changing the order of these files may result in an error-->
+<script src="Control/Vec.js"></script>
+<script src="Control/Player.js"></script>
+<!--Leave ^ Theese ^ Here-->
+<script src="Control/Canvas.js"></script>
+<script src="Control/Coin.js"></script>
+<script src="Control/Lava.js"></script>
+<script src="Control/Level.js"></script>
+<script src="Control/Sound.js"></script>
+<script src="Control/State.js"></script>
+<script src="Control/Time.js"></script>
+<script src="Control/TextReader.js"></script>
+<!--Put Logic at the Bottom Becuase it depends on the others
+  changing this will cause an error-->
+<script src="Control/Logic.js"></script>
+<!--Music Sources-->
 <audio loop src="Music/Background.mp3" id="Background"></audio>
 <audio src="Music/Coin.mp3" id="Coin"></audio>
 <audio src="Music/Death.mp3" id="Death"></audio>
@@ -8,8 +24,13 @@
 <audio src="Music/Victory.mp3" id="Victory"></audio>
 <audio src="Music/Winner.mp3" id="Winner"></audio>
 
-<body>
-  <button onclick="playGame()" id="playButton">Play Game</button>
+<body style="background-image:url('Images/Background.jpg');background-size:cover">
+  <button onclick="playGame()" id="playButton">Adventure!</button>
+  <div class="InputLine">
+    <input type='file' accept='text/plain' id="file" onchange='ValidateInput(event)'/>
+    <<< Enter Your "Levels.txt" File Here! ( Usually Located At "(Your_Download_Location)/Control/Levels.txt")
+
+  </div>
   <style>
     html,
     body {
@@ -18,14 +39,36 @@
       margin: 0px;
       overflow: hidden
     }
+
+    #playButton {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      width: 150px;
+      height: 40px;
+      margin-top: -20px;
+      margin-left: -75px;
+      background: #114800;
+      border-radius: 1000px;
+      color: #ffffff;
+      font: normal 25px "Bellota", cursive;
+      text-align: center;
+      text-shadow: 3px 2px #000000;
+    }
+
+    .InputLine {
+      font: normal 10px "Consolas", cursive;
+      background-color: white;
+    }
+    #file {
+      font: normal 10px "Consolas", cursive;
+      background-color: white;
+    }
   </style>
   <script>
-    function playGame() {
-      var element = document.getElementById("playButton");
-      element.parentNode.removeChild(element);
-      var backgroundSound = document.getElementById("Background");
-      backgroundSound.play()
-      runGame(GAME_LEVELS, CanvasDisplay);
-    }
+  function ValidateInput (event) {
+    let myTextReader = new TextReader()
+    myTextReader.readFile(event)
+  }
   </script>
 </body>

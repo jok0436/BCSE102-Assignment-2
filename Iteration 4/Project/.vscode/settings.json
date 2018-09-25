@@ -1,6 +1,8 @@
 {
-        "jshint.lintHTML": true,
-        "jshint.options": {
-            "asi":      true,
-        }
+    "javascript.validate.enable": false,
+    "standard.enable": true,
+    "standard.autoFixOnSave": true,
+    "standard.options": {
+        
+    }
 }
