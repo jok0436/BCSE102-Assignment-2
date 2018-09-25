@@ -4,16 +4,20 @@ class TextReader { // eslint-disable-line no-unused-vars
   readFile (event) {
     // Retrieve the first (and only!) File from the FileList object
     let file = event.target.files[0]
-    if (file) {
-      let reader = new FileReader()
-      reader.onload = function (e) {
-        let contents = e.target.result
-        console.log(contents)
-        return contents
-      }
-      console.log(reader.readAsText(file))
-    } else {
-      return null
+    var promise = Promise.resolve()
+    pFileReader(file)
+    promise.then(function (result) {
+      console.log(result)
+    })
+
+    function pFileReader (file) {
+      return new Promise((resolve, reject) => {
+        var reader = new FileReader()
+        reader.onload = function found () {
+          resolve(reader.result) // CHANGE to whatever function you want which would eventually call resolve
+        }
+        reader.readAsText(file)
+      })
     }
   }
 
