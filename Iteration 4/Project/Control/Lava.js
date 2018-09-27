@@ -32,7 +32,7 @@ position after colliding with a wall */
 }
 // If a player collides with lava, we lose
 Lava.prototype.collide = function (state) {
-  return new State(state.level, state.actors, 'lost')
+  return new State(state.level, state.timer, state.actors, 'lost')
 }
 /* Every time the game processes a new frame
 we run this, it takes the time since the last frame and the games current state */

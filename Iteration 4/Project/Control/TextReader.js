@@ -4,7 +4,7 @@ this comment, basically when i call findGameLevels im passing the event from a f
 input element, so im only looking for 1 file so i bind the first file in the targets' .files
 array then i bind result to the result of getFile(file) but i have to wait for it to finish
 since it performs this function asynchrounously, so once getFile returns resultSplit with resolve
-i then set the global variable GAME_LEVELS to result */
+i then set the global variable allMyLevels to result */
 class TextReader { // eslint-disable-line no-unused-vars
   // ^^^ Just becuase we're hosting this in a different file so its actually used globally
   getFile (file) {
@@ -23,6 +23,6 @@ class TextReader { // eslint-disable-line no-unused-vars
   async findGameLevels (event) {
     let file = event.target.files[0]
     let result = await this.getFile(file)
-    window.GAME_LEVELS = result
+    window.allMyLevels = result
   }
 }

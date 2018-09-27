@@ -27,6 +27,7 @@ CanvasDisplay.prototype.setState = function (state) {
   this.clearDisplay(state.status)
   this.drawBackground(state.level)
   this.drawActors(state.actors)
+  this.drawRemainingTime(state.timer.remainingTime)
 }
 CanvasDisplay.prototype.updateCanvas = function () {
   this.canvas.width = window.innerWidth

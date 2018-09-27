@@ -35,7 +35,7 @@ Coin.prototype.collide = function (state) {
   } else {
     mySound.playWithID('Coin', true)
   }
-  return new State(state.level, filtered, status)
+  return new State(state.level, state.timer, filtered, status)
 }
 /* Whenever a new frame is processed,
 wobble = wobble + time (elapsed) * speed
