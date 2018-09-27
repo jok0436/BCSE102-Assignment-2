@@ -1,12 +1,8 @@
 /* jshint esversion:6 */
-var mySound = new Sound()
-function playGame () {
-  var element = document.getElementById('playButton')
-  element.parentNode.removeChild(element)
-  mySound.playWithID('Background')
-  runGame(GAME_LEVELS, CanvasDisplay)
-}
+/* global Sound State Timer Level requestAnimationFrame */
 
+// Obviously we want other parts of our program to play sound, so its global too
+var mySound = new Sound()
 
 function trackKeys (keys) {
   let down = Object.create(null)
@@ -38,18 +34,18 @@ function runAnimation (frameFunc) {
   }
   requestAnimationFrame(frame)
 }
+
 function runLevel (level, Display) {
   mySound.clearSoundCache()
   let display = new Display(document.body, level)
   let state = State.start(level)
-  let timer = new Timer(0,0,state.level.completeTime)
+  let timer = new Timer(0, 0, state.level.completeTime)
   let ending = 1
   return new Promise(resolve => {
     runAnimation(time => {
       state = state.update(time, arrowKeys)
       timer.evalutate(time)
-      if (time.remainingTime === 0)
-      {
+      if (timer.remainingTime === 0) {
         state.status = 'lost'
       }
       if (state.status === 'lost') {
