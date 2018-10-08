@@ -49,3 +49,4 @@ Player.prototype.size = new Vec(0.4, 0.4)
 Player.prototype.gravity = 30
 Player.prototype.playerXSpeed = 7
 Player.prototype.jumpSpeed = 17
+Player.prototype.lives = 3

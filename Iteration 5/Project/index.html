@@ -111,11 +111,11 @@ changing the order of these files may result in an error-->
     // Remove the splash screen elements of the game when the player clicks the play button
     function deleteSplashScreenElements() {
       let element = document.getElementById("playButton")
-      element.parentNode.removeChild(element)
+      if (element) element.parentNode.removeChild(element)
       element = document.getElementById("video")
-      element.parentNode.removeChild(element)
+      if (element) element.parentNode.removeChild(element)
       element = document.getElementById("divInput")
-      element.parentNode.removeChild(element)
+      if (element) element.parentNode.removeChild(element)
       document.body.style.backgroundImage = "none"
     }
     // User just clicked the play button

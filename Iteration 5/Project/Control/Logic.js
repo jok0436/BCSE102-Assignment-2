@@ -39,6 +39,7 @@ function runLevel (level) {
   let state = State.start(level)
   let ending = 1
   let arrowKeys = trackKeys(['ArrowLeft', 'ArrowRight', 'ArrowUp'])
+  let playerLives = state.player.lives
   // we keep running this until the resolve function is called, so basically until we lose or win
   return new Promise(resolve => {
     runAnimation(time => {
@@ -48,6 +49,7 @@ function runLevel (level) {
         state.status = 'lost'
       }
       if (state.status === 'lost') {
+        playerLives-- // redo this
         mySound.playWithID('Death')
       }
       display.setState(state)
