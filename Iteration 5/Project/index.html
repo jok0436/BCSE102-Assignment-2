@@ -26,7 +26,7 @@ changing the order of these files may result in an error-->
 <audio src="Music/Winner.mp3" id="Winner"></audio>
 <!--End Music Sources-->
 
-<body>
+<body background="Images/Background.jpg">
   <video autoplay muted loop playsinline id="video" width="100%" height="100%" src="C:\Users\josia\Desktop\Background.mp4"></video>
   <button onclick="playerReady()" id="playButton">Adventure!</button>
 
@@ -36,12 +36,22 @@ changing the order of these files may result in an error-->
 
     <input type="button" value="Choose File" onclick="document.getElementById('filehidden').click();" id="file" />
 
-    <<< Enter Your "Levels.txt" File Here! (Usually Located At "&lt;Your_Download_Location&gt;/Control/Levels.txt")
+    <<< Enter Your "Levels.txt" File Here! (Usually Located At "&lt;Your_Download_Location&gt;/Control/Levels.txt" )
       <img src="Images/Mute.png" width="30px" height="30px" onclick="toggleMuteBGM()" id="BGM">
 
   </div>
 
   <style>
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0px;
+      background-repeat: no-repeat;
+      background-size: cover;
+      overflow: hidden
+    }
+
     #video {
       position: fixed;
       right: 0;
@@ -51,13 +61,7 @@ changing the order of these files may result in an error-->
       object-fit: fill;
     }
 
-    html,
-    body {
-      width: 100%;
-      height: 100%;
-      margin: 0px;
-      overflow: hidden
-    }
+
 
     #playButton {
       position: fixed;
@@ -112,6 +116,7 @@ changing the order of these files may result in an error-->
       element.parentNode.removeChild(element)
       element = document.getElementById("divInput")
       element.parentNode.removeChild(element)
+      document.body.style.backgroundImage = "none"
     }
     // User just clicked the play button
     function playerReady() {
@@ -120,7 +125,9 @@ changing the order of these files may result in an error-->
         mySound.playWithID("Background")
         runGame(allMyLevels)
       } else {
-        alert(`Enter Your "Levels.txt" File In The Box Above!\n(Usually Located At "<Your_Download_Location>/Control/Levels.txt")`)
+        alert(
+          `Enter Your "Levels.txt" File In The Box Above!\n(Usually Located At "<Your_Download_Location>/Control/Levels.txt")`
+        )
       }
     }
     // User just toggled the mute/unmute icon for the splash screen background music
