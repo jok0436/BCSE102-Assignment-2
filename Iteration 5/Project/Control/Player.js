@@ -1,8 +1,9 @@
-/* global Vec */
+/* global Vec Lives */
 var Player = class Player {
-  constructor (pos, speed) {
+  constructor (pos, speed, lives) {
     this.pos = pos
     this.speed = speed
+    this.lives = lives
   }
 
   get type () {
@@ -11,7 +12,7 @@ var Player = class Player {
 
   static create (pos) {
     return new Player(pos.plus(new Vec(0, 0)),
-      new Vec(0, 0))
+      new Vec(0, 0), new Lives(2))
   }
 }
 /* That leaves the player itself. Player motion is handled separately per axis because hitting the floor
@@ -35,7 +36,10 @@ Player.prototype.update = function (time, state, keys) {
   } else {
     ySpeed = 0
   }
-  return new Player(pos, new Vec(xSpeed, ySpeed))
+  return new Player(pos, new Vec(xSpeed, ySpeed), new Lives(this.lives.count))
+}
+Player.prototype.reset = function (state) {
+  this.pos = state.level.playerStartPosition
 }
 /* The horizontal motion is computed based on the state of the left and right arrow keys. When there’s no wall blocking the new
 position created by this motion, it is used. Otherwise, the old position is kept. Vertical motion works in a similar way but
@@ -49,4 +53,3 @@ Player.prototype.size = new Vec(0.4, 0.4)
 Player.prototype.gravity = 30
 Player.prototype.playerXSpeed = 7
 Player.prototype.jumpSpeed = 17
-Player.prototype.lives = 3

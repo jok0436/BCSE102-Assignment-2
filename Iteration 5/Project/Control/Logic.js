@@ -37,25 +37,24 @@ function runLevel (level) {
   mySound.clearSoundCache()
   let display = new CanvasDisplay(document.body, level)
   let state = State.start(level)
-  let ending = 1
+  let ending = 8
   let arrowKeys = trackKeys(['ArrowLeft', 'ArrowRight', 'ArrowUp'])
-  let playerLives = state.player.lives
   // we keep running this until the resolve function is called, so basically until we lose or win
   return new Promise(resolve => {
     runAnimation(time => {
       state = state.update(time, arrowKeys)
       state.timer.evalutate(time)
-      if (state.timer.remainingTime === 0) {
-        state.status = 'lost'
-      }
+      if (state.timer.remainingTime === 0) state.status = 'lost'
       if (state.status === 'lost') {
-        playerLives-- // redo this
-        mySound.playWithID('Death')
+        state.status = state.player.lives.reduceAndCheck()
+        if (state.status === 'playing') state.player.reset(state)
+        mySound.clearSoundCache()
+        state.timer.reset()
       }
       display.setState(state)
       if (state.status === 'playing') {
         return true
-      } else if (ending > 0) {
+      } else if (ending > 0 && state.status !== 'won') {
         ending -= time
         return true
       } else {
@@ -74,6 +73,7 @@ async function runGame (allPlans) { // eslint-disable-line no-unused-vars
     let status = await runLevel(new Level(allPlans[level]))
     // if we won then go to the next level
     if (status === 'won') level++
+    if (status === 'lost') window.location.reload(false)
   }
   // We won the game!
   mySound.playWithID('Winner')

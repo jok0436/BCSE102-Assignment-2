@@ -24,6 +24,10 @@ var Level = class Level { // eslint-disable-line no-unused-vars
       })
     })
   }
+  get playerStartPosition () {
+    let startingPlayer = this.startActors.find(a => a.type === 'player')
+    return startingPlayer.pos
+  }
 }
 /* We loop over the block of grid squares found by rounding the coordinates and return true
 when a matching square is found. Squares outside of the level are always treated as "wall"

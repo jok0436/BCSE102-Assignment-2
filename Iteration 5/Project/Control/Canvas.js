@@ -28,6 +28,7 @@ CanvasDisplay.prototype.setState = function (state) {
   this.drawBackground(state.level)
   this.drawActors(state.actors)
   this.drawRemainingTime(state.timer.remainingTime)
+  this.drawLives(state.player.lives.count)
 }
 CanvasDisplay.prototype.updateCanvas = function () {
   this.canvas.width = window.innerWidth
@@ -38,6 +39,12 @@ CanvasDisplay.prototype.drawRemainingTime = function (remainingTime) {
   this.cx.font = '30px Consolas'
   this.cx.fillStyle = 'white'
   this.cx.fillText(remainingTime, 2, 20)
+}
+
+CanvasDisplay.prototype.drawLives = function (remainingLives) {
+  this.cx.font = '30px Consolas'
+  this.cx.fillStyle = 'white'
+  this.cx.fillText('lives : ' + remainingLives, 100, 20)
 }
 
 CanvasDisplay.prototype.updateViewport = function (state) {
@@ -75,7 +82,7 @@ CanvasDisplay.prototype.clearDisplay = function (status) {
   if (status === 'won') {
     this.cx.fillStyle = 'rgb(68, 191, 255)'
   } else if (status === 'lost') {
-    this.cx.fillStyle = 'rgb(44, 136, 214)'
+    this.cx.fillStyle = 'rgb(128, 0, 0)'
   } else {
     this.cx.fillStyle = 'rgb(52, 166, 251)'
   }

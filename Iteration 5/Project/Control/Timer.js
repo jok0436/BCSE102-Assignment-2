@@ -9,4 +9,7 @@ class Timer {// eslint-disable-line no-unused-vars
     this.elapsedTime += newTime
     this.remainingTime = Math.floor(this.completeTime - this.elapsedTime)
   }
+  reset () {
+    this.elapsedTime = 0
+  }
 }
