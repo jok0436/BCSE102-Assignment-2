@@ -41,7 +41,16 @@ class Sound { // eslint-disable-line no-unused-vars
     if (soundFile) {
       soundFile.pause()
     } else {
-      // There was no sound file with this ID, so do nothing
+    // There was no sound file with this ID, so do nothing
+    }
+  }
+  // Either Unpauses or Plays a sound file and doesn't worry about wether it's been played before
+  alwaysPlaySoundWithID (soundID) {
+    let soundFile = document.getElementById(soundID)
+    if (soundFile) {
+      soundFile.play()
+    } else {
+    // There was no sound file with this ID, so do nothing
     }
   }
   // Clear out the sound cache (probably becuase we started a new level)

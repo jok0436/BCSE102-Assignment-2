@@ -29,17 +29,18 @@ body {
     height: 10%;
 }
 
-#file {
+#customFileButton {
     position: fixed;
     left: 15%;
     bottom: 19%;
     width: 70%;
     height: 15%;
-    background: #114800;
+    background: #aaafb4;
     color: #ffffff;
     font: normal 6vw "Bellota", cursive;
     text-align: center;
     line-height: 50%;
+    text-decoration: line-through;
 }
 
 #Logo {

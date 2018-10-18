@@ -41,13 +41,13 @@ changing the order of these files may result in an error-->
 
   <div id="divInput">
 
-    <input type="checkbox" id="useLevels" title="Use Custom Levels?">
+    <input type="checkbox" id="useLevels" title="Use Custom Levels?" onclick="checkboxClicked(this)" />
 
-    <input type="file" accept="text/plain" id="filehidden" onchange="readInput(event)" style="display: none;" />
+    <input type="file" id="fileHidden" accept="text/plain" style="display: none;" onchange="readInput(event)" />
 
-    <input type="button" value="Custom Levels" onclick="document.getElementById('filehidden').click();" id="file" />
+    <input type="button" id="customFileButton" value="Custom Levels" disabled onclick="document.getElementById('fileHidden').click();" />
 
-    <img src="Images/Mute.png" width="40px" height="40px" onclick="toggleMuteBGM()" id="BGM" title="Toggle Background Music">
+    <img src="Images/Mute.png" id="BGM" title="Toggle Background Music" onclick="toggleMuteBGM()" />
 
   </div>
 
@@ -59,37 +59,78 @@ changing the order of these files may result in an error-->
       let theTextReader = new TextReader()
       theTextReader.findGameLevels(event)
     }
-    // Remove the splash screen elements of the game when the player clicks the play button
+    // Remove the splash screen elements of the game
     function deleteSplashScreenElements() {
       let element = document.getElementById("playButton")
-      if (element) element.parentNode.removeChild(element)
+      if (element) element.parentNode.removeChild(element) // Delete The Play Button
       element = document.getElementById("divInput")
-      if (element) element.parentNode.removeChild(element)
-      document.body.style.backgroundImage = "none"
+      if (element) element.parentNode.removeChild(element) // Delete The Input Div (Mute,Checkbox,Custom Levels)
+      element = document.getElementById("Logo")
+      if (element) element.parentNode.removeChild(element) // Delete The Game Logo
+      document.body.style.backgroundImage = "none" // Delete The background Image
     }
     // User just clicked the play button
-    function playerReady() {
-      if (typeof allMyLevels !== 'undefined') {
-        deleteSplashScreenElements()
-        mySound.playWithID("Background")
-        runGame(allMyLevels)
+    async function playerReady() {
+      let theCheckbox = document.getElementById("useLevels")
+      if (theCheckbox.checked) { // The Checkbox is Checked
+        if (typeof allMyLevels !== 'undefined') { // We Have Levels to work with
+          console.log("Using Custom Levels File")
+          deleteSplashScreenElements()
+          runGame(allMyLevels)
+        } else { // We Don't have levels to work with
+          alert(
+            `You have selected "Custom Levels" but i don't have a file to work with :(`
+          )
+        }
+      } else { // The Checkbox isn't Checked
+        if (await tryFetchLevelsFromGithub()) { // We Fetched Data From The Internet
+          console.log("Using Internet Levels File")
+          deleteSplashScreenElements()
+          runGame(allMyLevels)
+        } else { // We Failed Fetching Data From The Internet
+          alert(
+            `I Can't Access the Internet Levels, try using a Custom Levels file instead`
+          )
+        }
+      }
+    }
+    //Try to fetch level data from Github
+    async function tryFetchLevelsFromGithub() {
+      const response = await fetch(
+        "https://gist.githubusercontent.com/jok0436/aa3849650eca613b4c227a5c74d60f34/raw/1d5a5b7f9b15f1598079fff416ddf716aa23a08e/Levels.txt"
+      )
+      const text = await response.text()
+      if (text) {
+        allMyLevels = text.split('BREAK')
+        return true
       } else {
-        alert(
-          `Enter Your "Levels.txt" File In The Box Above!\n(Usually Located At "<Your_Download_Location>/Control/Levels.txt")`
-        )
+        return false
       }
     }
     // User just toggled the mute/unmute icon for the splash screen background music
     function toggleMuteBGM(params) {
       let element = document.getElementById("BGM")
-      let video = document.getElementById("video")
       let imageFileName = element.src.replace(/^.*[\\\/]/, '');
       if (imageFileName == "Mute.png") {
         element.src = "Images/Sound.png"
-        video.muted = false
+        mySound.alwaysPlaySoundWithID("Background")
       } else {
         element.src = "Images/Mute.png"
-        video.muted = true
+        mySound.pauseWithID("Background")
+      }
+    }
+
+    // User Clicked The Checkbox
+    function checkboxClicked(theCheckbox) {
+      let customFileButton = document.getElementById("customFileButton")
+      if (theCheckbox.checked) { // The Checkbox is Checked
+        customFileButton.disabled = false
+        customFileButton.style.background = "#114800"
+        customFileButton.style.textDecoration = "none"
+      } else { // The Checkbox isn't Checked
+        customFileButton.disabled = true
+        customFileButton.style.background = "#aaafb4"
+        customFileButton.style.textDecoration = "line-through"
       }
     }
   </script>
