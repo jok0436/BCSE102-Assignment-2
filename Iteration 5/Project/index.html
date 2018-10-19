@@ -53,9 +53,9 @@ changing the order of these files may result in an error-->
 
   <button onclick="playerReady()" id="playButton">Adventure!</button>
 <!--TOUCH SCREEN COMPATIBILITY-->
-<div id="touchLeft" onclick="clickItemUnderCurrent(event)"></div>
-<div id="touchRight" onclick="clickItemUnderCurrent(event)"></div>
-<div id="touchBottom" onclick="clickItemUnderCurrent(event)"></div>
+<input type="button" id="touchLeft" onclick="clickItemUnderCurrent(event)" />
+<input type="button" id="touchRight" onclick="clickItemUnderCurrent(event)" />
+<input type="button" id="touchBottom" onclick="clickItemUnderCurrent(event)" />
   <script>
    /*
     The User just clicked our touch screen elements that cover the entire screen, the browser by default will only click the upper most element
