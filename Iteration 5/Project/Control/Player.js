@@ -19,8 +19,8 @@ var Player = class Player {
  should not prevent horizontal motion, and hitting a wall should not stop falling or jumping motion. */
 Player.prototype.update = function (time, state, keys) {
   let xSpeed = 0
-  if (keys.ArrowLeft) xSpeed -= this.playerXSpeed
-  if (keys.ArrowRight) xSpeed += this.playerXSpeed
+  if (keys.ArrowLeft || keys.touchLeft) xSpeed -= this.playerXSpeed
+  if (keys.ArrowRight || keys.touchRight) xSpeed += this.playerXSpeed
   let pos = this.pos
   let movedX = pos.plus(new Vec(xSpeed * time, 0))
   if (!state.level.touches(movedX, this.size, 'wall')) {
@@ -31,7 +31,7 @@ Player.prototype.update = function (time, state, keys) {
   let movedY = pos.plus(new Vec(0, ySpeed * time))
   if (!state.level.touches(movedY, this.size, 'wall')) {
     pos = movedY
-  } else if (keys.ArrowUp && ySpeed > 0) {
+  } else if ((keys.ArrowUp || keys.touchBottom) && ySpeed > 0) {
     ySpeed = -this.jumpSpeed
   } else {
     ySpeed = 0

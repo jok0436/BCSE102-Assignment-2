@@ -4,17 +4,30 @@
 // Obviously we want other parts of our program to play sound, so its global
 var mySound = new Sound()
 
-function trackKeys (keys) {
+function trackKeys (keyboardKeys, touchElements) {
   let down = Object.create(null)
 
   function track (event) {
-    if (keys.includes(event.key)) {
+    if (keyboardKeys.includes(event.key)) {
       down[event.key] = event.type === 'keydown'
+      event.preventDefault()
+    }
+  }
+  function trackElementClicked (event) {
+    if (touchElements.includes(event.currentTarget.id)) {
+      down[event.currentTarget.id] = event.type === 'mousedown'
       event.preventDefault()
     }
   }
   window.addEventListener('keydown', track)
   window.addEventListener('keyup', track)
+  touchElements.forEach(elementName => {
+    let currentElement = document.getElementById(elementName)
+    if (currentElement) {
+      currentElement.addEventListener('mousedown', trackElementClicked)
+      currentElement.addEventListener('mouseup', trackElementClicked)
+    }
+  })
   return down
 }
 
@@ -38,7 +51,7 @@ function runLevel (level) {
   let display = new CanvasDisplay(document.body, level)
   let state = State.start(level)
   let ending = 8
-  let arrowKeys = trackKeys(['ArrowLeft', 'ArrowRight', 'ArrowUp'])
+  let arrowKeys = trackKeys(['ArrowLeft', 'ArrowRight', 'ArrowUp'], ['touchLeft', 'touchRight', 'touchBottom'])
   // we keep running this until the resolve function is called, so basically until we lose or win
   return new Promise(resolve => {
     runAnimation(time => {

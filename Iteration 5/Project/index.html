@@ -52,8 +52,21 @@ changing the order of these files may result in an error-->
   </div>
 
   <button onclick="playerReady()" id="playButton">Adventure!</button>
-
+<!--TOUCH SCREEN COMPATIBILITY-->
+<div id="touchLeft" onclick="clickItemUnderCurrent(event)"></div>
+<div id="touchRight" onclick="clickItemUnderCurrent(event)"></div>
+<div id="touchBottom" onclick="clickItemUnderCurrent(event)"></div>
   <script>
+   /*
+    The User just clicked our touch screen elements that cover the entire screen, the browser by default will only click the upper most element
+    so only the touch element will be clicked and not underlying elements like the menu buttons, we should just make it so that the browser also
+    clicks the element directly under the element just clicked so that buttons and things will still work
+   */
+    function clickItemUnderCurrent(clickEvent) {
+      let allElementsAtLocation = document.elementsFromPoint(clickEvent.clientX, clickEvent.clientY)
+      allElementsAtLocation.shift()
+      allElementsAtLocation[0].click()
+    }
     // User just inputted a file for us to read
     function readInput(event) {
       let theTextReader = new TextReader()
