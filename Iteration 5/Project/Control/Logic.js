@@ -1,10 +1,10 @@
 /* jshint esversion:6 */
-/* global Sound State Level requestAnimationFrame CanvasDisplay */
+/* global Sound State Level requestAnimationFrame CanvasDisplay Vec TouchRing */
 
 // Obviously we want other parts of our program to play sound, so its global
 var mySound = new Sound()
 
-function trackKeys (keyboardKeys, touchElements) {
+function trackKeys (keyboardKeys) {
   let down = Object.create(null)
 
   function track (event) {
@@ -13,22 +13,31 @@ function trackKeys (keyboardKeys, touchElements) {
       event.preventDefault()
     }
   }
-  function trackElementClicked (event) {
-    if (touchElements.includes(event.currentTarget.id)) {
-      down[event.currentTarget.id] = event.type === 'mousedown'
-      event.preventDefault()
-    }
-  }
   window.addEventListener('keydown', track)
   window.addEventListener('keyup', track)
-  touchElements.forEach(elementName => {
-    let currentElement = document.getElementById(elementName)
-    if (currentElement) {
-      currentElement.addEventListener('mousedown', trackElementClicked)
-      currentElement.addEventListener('mouseup', trackElementClicked)
-    }
-  })
   return down
+}
+
+function trackTouches (state) {
+  let positions = [-1000, -1000, -1000, -1000]
+  function onTouchStart (event) {
+    if (event.touches[0]) {
+      positions[0] = event.touches[0].pageX
+      positions[1] = event.touches[0].pageY
+    }
+  }
+
+  function onTouchMove (event) {
+
+  }
+
+  function onTouchEnd (event) {
+
+  }
+  window.addEventListener('touchstart', onTouchStart, false)
+  window.addEventListener('touchmove', onTouchMove, false)
+  window.addEventListener('touchend', onTouchEnd, false)
+  return positions
 }
 
 function runAnimation (frameFunc) {
@@ -51,11 +60,12 @@ function runLevel (level) {
   let display = new CanvasDisplay(document.body, level)
   let state = State.start(level)
   let ending = 8
-  let arrowKeys = trackKeys(['ArrowLeft', 'ArrowRight', 'ArrowUp'], ['touchLeft', 'touchRight', 'touchBottom'])
+  let arrowKeys = trackKeys(['ArrowLeft', 'ArrowRight', 'ArrowUp'])
+  let touchPositions = trackTouches(state)
   // we keep running this until the resolve function is called, so basically until we lose or win
   return new Promise(resolve => {
     runAnimation(time => {
-      state = state.update(time, arrowKeys)
+      state = state.update(time, arrowKeys, touchPositions)
       state.timer.evalutate(time)
       if (state.timer.remainingTime === 0) state.status = 'lost'
       if (state.status === 'lost') {

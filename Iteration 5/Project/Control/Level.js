@@ -1,4 +1,4 @@
-/* global Player Coin Lava Vec */
+/* global Player Coin Lava Vec TouchRing */
 var Level = class Level { // eslint-disable-line no-unused-vars
   // ^^^ Just becuase we're hosting this in a different file so its actually used globally
   constructor (plan) {
@@ -23,6 +23,8 @@ var Level = class Level { // eslint-disable-line no-unused-vars
         return 'empty'
       })
     })
+    this.startActors.push(new TouchRing(new Vec(-1000, -1000), new Vec(-1000, -1000), 'touchRingBlack'))
+    this.startActors.push(new TouchRing(new Vec(-1000, -1000), new Vec(-1000, -1000), 'touchRingWhite'))
   }
   get playerStartPosition () {
     let startingPlayer = this.startActors.find(a => a.type === 'player')

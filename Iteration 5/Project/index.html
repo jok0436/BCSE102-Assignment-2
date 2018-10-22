@@ -13,6 +13,7 @@ changing the order of these files may result in an error-->
 <script src="Control/State.js"></script>
 <script src="Control/Timer.js"></script>
 <script src="Control/TextReader.js"></script>
+<script src="Control/TouchRing.js"></script>
 <script src="Control/Lives.js"></script>
 <!--Put Logic at the Bottom Becuase it depends on the others
   changing this will cause an error-->
@@ -45,28 +46,14 @@ changing the order of these files may result in an error-->
 
     <input type="file" id="fileHidden" accept="text/plain" style="display: none;" onchange="readInput(event)" />
 
-    <input type="button" id="customFileButton" value="Custom Levels" disabled onclick="document.getElementById('fileHidden').click();" />
+    <button id="customFileButton" disabled onclick="document.getElementById('fileHidden').click();">Custom Levels</button>
 
     <img src="Images/Mute.png" id="BGM" title="Toggle Background Music" onclick="toggleMuteBGM()" />
 
   </div>
 
-  <button onclick="playerReady()" id="playButton">Adventure!</button>
-<!--TOUCH SCREEN COMPATIBILITY-->
-<input type="button" id="touchLeft" onclick="clickItemUnderCurrent(event)" />
-<input type="button" id="touchRight" onclick="clickItemUnderCurrent(event)" />
-<input type="button" id="touchBottom" onclick="clickItemUnderCurrent(event)" />
+  <button id="playButton" onclick="playerReady()">Adventure</button>
   <script>
-   /*
-    The User just clicked our touch screen elements that cover the entire screen, the browser by default will only click the upper most element
-    so only the touch element will be clicked and not underlying elements like the menu buttons, we should just make it so that the browser also
-    clicks the element directly under the element just clicked so that buttons and things will still work
-   */
-    function clickItemUnderCurrent(clickEvent) {
-      let allElementsAtLocation = document.elementsFromPoint(clickEvent.clientX, clickEvent.clientY)
-      allElementsAtLocation.shift()
-      allElementsAtLocation[0].click()
-    }
     // User just inputted a file for us to read
     function readInput(event) {
       let theTextReader = new TextReader()
@@ -109,14 +96,15 @@ changing the order of these files may result in an error-->
     }
     //Try to fetch level data from Github
     async function tryFetchLevelsFromGithub() {
-      const response = await fetch(
+      try {
+        const response = await fetch(
         "https://gist.githubusercontent.com/jok0436/aa3849650eca613b4c227a5c74d60f34/raw/1d5a5b7f9b15f1598079fff416ddf716aa23a08e/Levels.txt"
       )
       const text = await response.text()
-      if (text) {
-        allMyLevels = text.split('BREAK')
-        return true
-      } else {
+      allMyLevels = text.split('BREAK')
+      return true
+      } catch (error) {
+        console.log(error)
         return false
       }
     }
