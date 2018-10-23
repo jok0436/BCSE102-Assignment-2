@@ -25,6 +25,10 @@ function trackTouches (state) {
       positions[0] = event.touches[0].pageX
       positions[1] = event.touches[0].pageY
     }
+    if (event.touches[1]) {
+      positions[2] = event.touches[1].pageX
+      positions[3] = event.touches[1].pageY
+    }
   }
 
   function onTouchMove (event) {
