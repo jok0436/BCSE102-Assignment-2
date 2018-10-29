@@ -137,6 +137,9 @@ CanvasDisplay.prototype.drawActors = function (actors) {
       case 'lava':
         this.cx.fillStyle = '#ff7b00'
         break
+      case 'TouchRing':
+        this.drawTouchRing(actor)
+        break
       default:
         break
     }
@@ -144,3 +147,16 @@ CanvasDisplay.prototype.drawActors = function (actors) {
   }
 }
 CanvasDisplay.prototype.scale = 20
+CanvasDisplay.prototype.drawTouchRing = function (touchRing) {
+  if (touchRing.name === 'touchRingBlack' && !touchRing.isHidden) {
+    let innerRing = document.getElementById('ringBlackInner')
+    let outerRing = document.getElementById('ringBlackOuter')
+    this.cx.drawImage(innerRing, touchRing.innerRingPosition.x - innerRing.width / 2, touchRing.innerRingPosition.y - innerRing.height / 2)
+    this.cx.drawImage(outerRing, touchRing.outerRingPosition.x - outerRing.width / 2, touchRing.outerRingPosition.y - outerRing.height / 2)
+  } else if (touchRing.name === 'touchRingWhite' && !touchRing.isHidden) {
+    let innerRing = document.getElementById('ringWhiteInner')
+    let outerRing = document.getElementById('ringWhiteOuter')
+    this.cx.drawImage(innerRing, touchRing.innerRingPosition.x - innerRing.width / 2, touchRing.innerRingPosition.y - innerRing.height / 2)
+    this.cx.drawImage(outerRing, touchRing.outerRingPosition.x - outerRing.width / 2, touchRing.outerRingPosition.y - outerRing.height / 2)
+  }
+}

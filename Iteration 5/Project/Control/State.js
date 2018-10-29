@@ -16,12 +16,20 @@ var State = class State {
   get player () {
     return this.actors.find(a => a.type === 'player')
   }
+
+  get touchRingBlack () {
+    return this.actors.find(a => a.name === 'touchRingBlack')
+  }
+
+  get touchRingWhite () {
+    return this.actors.find(a => a.name === 'touchRingWhite')
+  }
 }
 /* Whenever we process a frame, update all actors, create newState with these new values
 if the status of newstate does not equal playing simply return newstate, if we are
 touching lava now after updating our player then we lose, for each actor if we overlap with the player
 then trigger the collide value of that actor. finally return newstate */
-State.prototype.update = function (time, keys, touchPositions) {
+State.prototype.update = function (time, keys) {
   let actors = this.actors
     .map(actor => actor.update(time, this, keys))
   let newState = new State(this.level, this.timer, actors, this.status)

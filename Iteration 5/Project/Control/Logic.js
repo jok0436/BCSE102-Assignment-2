@@ -1,5 +1,5 @@
 /* jshint esversion:6 */
-/* global Sound State Level requestAnimationFrame CanvasDisplay Vec TouchRing */
+/* global Sound State Level requestAnimationFrame CanvasDisplay */
 
 // Obviously we want other parts of our program to play sound, so its global
 var mySound = new Sound()
@@ -19,29 +19,34 @@ function trackKeys (keyboardKeys) {
 }
 
 function trackTouches (state) {
-  let positions = [-1000, -1000, -1000, -1000]
   function onTouchStart (event) {
     if (event.touches[0]) {
-      positions[0] = event.touches[0].pageX
-      positions[1] = event.touches[0].pageY
+      state.touchRingBlack.setOriginalPositions(event.touches[0].pageX, event.touches[0].pageY)
     }
     if (event.touches[1]) {
-      positions[2] = event.touches[1].pageX
-      positions[3] = event.touches[1].pageY
+      state.touchRingWhite.setOriginalPositions(event.touches[1].pageX, event.touches[1].pageY)
     }
   }
-
   function onTouchMove (event) {
-
+    if (event.touches[0]) {
+      state.touchRingBlack.newInnerRingPositions(event.touches[0].pageX, event.touches[0].pageY)
+    }
+    if (event.touches[1]) {
+      state.touchRingWhite.newInnerRingPositions(event.touches[1].pageX, event.touches[1].pageY)
+    }
   }
 
   function onTouchEnd (event) {
-
+    if (!event.touches[0]) {
+      state.touchRingBlack.reset()
+    }
+    if (!event.touches[1]) {
+      state.touchRingWhite.reset()
+    }
   }
   window.addEventListener('touchstart', onTouchStart, false)
   window.addEventListener('touchmove', onTouchMove, false)
   window.addEventListener('touchend', onTouchEnd, false)
-  return positions
 }
 
 function runAnimation (frameFunc) {
@@ -65,11 +70,11 @@ function runLevel (level) {
   let state = State.start(level)
   let ending = 8
   let arrowKeys = trackKeys(['ArrowLeft', 'ArrowRight', 'ArrowUp'])
-  let touchPositions = trackTouches(state)
+  trackTouches(state)
   // we keep running this until the resolve function is called, so basically until we lose or win
   return new Promise(resolve => {
     runAnimation(time => {
-      state = state.update(time, arrowKeys, touchPositions)
+      state = state.update(time, arrowKeys)
       state.timer.evalutate(time)
       if (state.timer.remainingTime === 0) state.status = 'lost'
       if (state.status === 'lost') {
