@@ -31,6 +31,9 @@ function trackTouches (state) {
     }
   }
   function onTouchMove (event) {
+    if (event.touches.length > 1) {
+      event.preventDefault()
+    }
     if (event.touches[0]) {
       state.touchRingBlack.newInnerRingPositions(event.touches[0].pageX, event.touches[0].pageY)
     }
@@ -40,6 +43,9 @@ function trackTouches (state) {
   }
 
   function onTouchEnd (event) {
+    if (event.touches.length > 1) {
+      event.preventDefault()
+    }
     if (!event.touches[0]) {
       state.touchRingBlack.reset()
     }

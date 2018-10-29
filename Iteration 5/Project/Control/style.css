@@ -5,7 +5,12 @@ body {
     margin: 0px;
     background-repeat: no-repeat;
     background-size: cover;
-    overflow: hidden
+    overflow: hidden;
+    overflow-x: hidden;
+}
+
+body {
+    position: relative;
 }
 
 #playButton {
