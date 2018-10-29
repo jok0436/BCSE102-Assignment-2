@@ -20,6 +20,9 @@ function trackKeys (keyboardKeys) {
 
 function trackTouches (state) {
   function onTouchStart (event) {
+    if (event.touches.length > 1) {
+      event.preventDefault()
+    }
     if (event.touches[0]) {
       state.touchRingBlack.setOriginalPositions(event.touches[0].pageX, event.touches[0].pageY)
     }

@@ -19,8 +19,8 @@ var Player = class Player {
  should not prevent horizontal motion, and hitting a wall should not stop falling or jumping motion. */
 Player.prototype.update = function (time, state, keys) {
   let xSpeed = 0
-  if (keys.ArrowLeft || keys.touchLeft) xSpeed -= this.playerXSpeed
-  if (keys.ArrowRight || keys.touchRight) xSpeed += this.playerXSpeed
+  if (keys.ArrowLeft || this.checkTouches(state, 'left')) xSpeed -= this.playerXSpeed
+  if (keys.ArrowRight || this.checkTouches(state, 'right')) xSpeed += this.playerXSpeed
   let pos = this.pos
   let movedX = pos.plus(new Vec(xSpeed * time, 0))
   if (!state.level.touches(movedX, this.size, 'wall')) {
@@ -31,7 +31,7 @@ Player.prototype.update = function (time, state, keys) {
   let movedY = pos.plus(new Vec(0, ySpeed * time))
   if (!state.level.touches(movedY, this.size, 'wall')) {
     pos = movedY
-  } else if ((keys.ArrowUp || keys.touchBottom) && ySpeed > 0) {
+  } else if ((keys.ArrowUp || this.checkTouches(state, 'up')) && ySpeed > 0) {
     ySpeed = -this.jumpSpeed
   } else {
     ySpeed = 0
@@ -40,6 +40,24 @@ Player.prototype.update = function (time, state, keys) {
 }
 Player.prototype.reset = function (state) {
   this.pos = state.level.playerStartPosition
+}
+Player.prototype.checkTouches = function (state, whichTouch) {
+  let touchRingBlack = state.touchRingBlack
+  let touchRingWhite = state.touchRingWhite
+  switch (whichTouch) {
+    case 'left':
+      if (touchRingBlack.innerRingPosition.x < touchRingBlack.outerRingPosition.x) return true
+      break
+    case 'right':
+      if (touchRingBlack.innerRingPosition.x > touchRingBlack.outerRingPosition.x) return true
+      break
+    case 'up':
+      if (touchRingWhite.innerRingPosition.y < touchRingWhite.outerRingPosition.y) return true
+      break
+    default:
+      break
+  }
+  return false
 }
 /* The horizontal motion is computed based on the state of the left and right arrow keys. When there’s no wall blocking the new
 position created by this motion, it is used. Otherwise, the old position is kept. Vertical motion works in a similar way but
