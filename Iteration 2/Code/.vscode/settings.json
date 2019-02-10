@@ -1,6 +1,0 @@
-{
-        "jshint.lintHTML": true,
-        "jshint.options": {
-            "asi":      true,
-        }
-}

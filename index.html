@@ -1,12 +1,153 @@
-<html>
+<!doctype html>
+<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+<meta name="viewport" content="width=device-width" />
+<!--Control Code-->
+<!--Vec and Player Should be on top becuase they are called by the other files (early)
+changing the order of these files may result in an error-->
+<script src="Control/Vec.js"></script>
+<script src="Control/Player.js"></script>
+<!--Leave ^ These ^ Here-->
+<script src="Control/Canvas.js"></script>
+<script src="Control/Coin.js"></script>
+<script src="Control/Lava.js"></script>
+<script src="Control/Level.js"></script>
+<script src="Control/Sound.js"></script>
+<script src="Control/State.js"></script>
+<script src="Control/Timer.js"></script>
+<script src="Control/TextReader.js"></script>
+<script src="Control/TouchRing.js"></script>
+<script src="Control/Lives.js"></script>
+<!--Put Logic at the Bottom Becuase it depends on the others
+  changing this will cause an error-->
+<!--End Control Code-->
+<script src="Control/Logic.js"></script>
+<!--Music Sources-->
+<audio loop src="Music/Background.mp3" id="Background"></audio>
+<audio src="Music/Coin.mp3" id="Coin"></audio>
+<audio src="Music/Death.mp3" id="Death"></audio>
+<audio src="Music/Defeat.mp3" id="Defeat"></audio>
+<audio src="Music/Victory.mp3" id="Victory"></audio>
+<audio src="Music/Winner.mp3" id="Winner"></audio>
+<!--End Music Sources-->
+<!--Stylesheet-->
+<link rel="stylesheet" type="text/css" href="Control/style.css">
+<!--Image Sources-->
+<img id="Bird" src="Images/Bird.gif" hidden>
+<img id="Boss" src="Images/Boss.gif" hidden>
+<img id="Coin" src="Images/Coin.gif" hidden>
+<img id="Dog" src="Images/Dog.gif" hidden>
+<img id="Ground" src="Images/Ground.gif" hidden>
+<img id="Hunter" src="Images/Hunter.gif" hidden>
+<img id="Kiwi" src="Images/Kiwi.gif" hidden>
+<img id="Lava" src="Images/Lava.gif" hidden>
+<img id="ringBlackInner" src="Images/ringBlackInner.png" hidden>
+<img id="ringBlackOuter" src="Images/ringBlackOuter.png" hidden>
+<img id="ringWhiteInner" src="Images/ringWhiteInner.png" hidden>
+<img id="ringWhiteOuter" src="Images/ringWhiteOuter.png" hidden>
+
 <head>
-    <title>Trying To Load The Game</title>
-    <meta http-equiv="refresh" content="2; URL=
-    https://jok0436.github.io/BCSE102-Assignment-2/Iteration%206/Project/index.html
-  ">
-    <meta name="keywords" content="automatic redirection">
+  <title>
+    Gather!
+  </title>
 </head>
-<body>
-    I'm Loading The Game ╰( ͡° ͜ʖ ͡° )つ──☆*:・ﾟ
+
+<body background="Images/Background.jpg">
+
+  <img src="Images/Logo.png" id="Logo">
+
+  <div id="divInput">
+
+    <input type="checkbox" id="useLevels" title="Use Custom Levels?" onclick="checkboxClicked(this)" />
+
+    <input type="file" id="fileHidden" accept="text/plain" style="display: none;" onchange="readInput(event)" />
+
+    <button id="customFileButton" disabled onclick="document.getElementById('fileHidden').click();">Custom Levels</button>
+
+    <img src="Images/Mute.png" id="BGM" title="Toggle Background Music" onclick="toggleMuteBGM()" />
+
+  </div>
+
+  <button id="playButton" onclick="playerReady()">Adventure</button>
+  <script>
+    // User just inputted a file for us to read
+    function readInput(event) {
+      let theTextReader = new TextReader()
+      theTextReader.findGameLevels(event)
+    }
+    // Remove the splash screen elements of the game
+    function deleteSplashScreenElements() {
+      let element = document.getElementById("playButton")
+      if (element) element.parentNode.removeChild(element) // Delete The Play Button
+      element = document.getElementById("divInput")
+      if (element) element.parentNode.removeChild(element) // Delete The Input Div (Mute,Checkbox,Custom Levels)
+      element = document.getElementById("Logo")
+      if (element) element.parentNode.removeChild(element) // Delete The Game Logo
+      document.body.style.backgroundImage = "none" // Delete The background Image
+    }
+    // User just clicked the play button
+    async function playerReady() {
+      let theCheckbox = document.getElementById("useLevels")
+      if (theCheckbox.checked) { // The Checkbox is Checked
+        if (typeof allMyLevels !== 'undefined') { // We Have Levels to work with
+          console.log("Using Custom Levels File")
+          deleteSplashScreenElements()
+          runGame(allMyLevels)
+        } else { // We Don't have levels to work with
+          alert(
+            `You have selected "Custom Levels" but i don't have a file to work with :(`
+          )
+        }
+      } else { // The Checkbox isn't Checked
+        if (await tryFetchLevelsFromGithub()) { // We Fetched Data From The Internet
+          console.log("Using Internet Levels File")
+          deleteSplashScreenElements()
+          runGame(allMyLevels)
+        } else { // We Failed Fetching Data From The Internet
+          alert(
+            `I Can't Access the Internet Levels, try using a Custom Levels file instead`
+          )
+        }
+      }
+    }
+    //Try to fetch level data from Github
+    async function tryFetchLevelsFromGithub() {
+      try {
+        const response = await fetch(
+        "https://gist.githubusercontent.com/jok0436/aa3849650eca613b4c227a5c74d60f34/raw/1d5a5b7f9b15f1598079fff416ddf716aa23a08e/Levels.txt"
+      )
+      const text = await response.text()
+      allMyLevels = text.split('BREAK')
+      return true
+      } catch (error) {
+        console.log(error)
+        return false
+      }
+    }
+    // User just toggled the mute/unmute icon for the splash screen background music
+    function toggleMuteBGM(params) {
+      let element = document.getElementById("BGM")
+      let imageFileName = element.src.replace(/^.*[\\\/]/, '');
+      if (imageFileName == "Mute.png") {
+        element.src = "Images/Sound.png"
+        mySound.alwaysPlaySoundWithID("Background")
+      } else {
+        element.src = "Images/Mute.png"
+        mySound.pauseWithID("Background")
+      }
+    }
+
+    // User Clicked The Checkbox
+    function checkboxClicked(theCheckbox) {
+      let customFileButton = document.getElementById("customFileButton")
+      if (theCheckbox.checked) { // The Checkbox is Checked
+        customFileButton.disabled = false
+        customFileButton.style.background = "#114800"
+        customFileButton.style.textDecoration = "none"
+      } else { // The Checkbox isn't Checked
+        customFileButton.disabled = true
+        customFileButton.style.background = "#aaafb4"
+        customFileButton.style.textDecoration = "line-through"
+      }
+    }
+  </script>
 </body>
-</html>
